@@ -20,7 +20,7 @@ jobs:
 
     container: ${{ matrix.docker_tag }}:latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v6
 
     - name: Install dependencies
       run: |
@@ -33,15 +33,15 @@ jobs:
 
     - name: Get short SHA
       id: slug
-      run: echo "::set-output name=sha8::$(echo ${GITHUB_SHA} | cut -c1-8)"
+      run: echo "sha8=$(echo ${GITHUB_SHA} | cut -c1-8)" >> $GITHUB_OUTPUT
     
     - name: Sanitized Docker Tag
       id: docker_tag
-      run: echo "::set-output name=sha8::$(echo ${{matrix.docker_tag}} | sed s:/:__:g)"
+      run: echo "sha8=$(echo ${{matrix.docker_tag}} | sed s:/:__:g)" >> $GITHUB_OUTPUT
 
     - name: Upload artifacts
       if: ${{ success() }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: hello-${{ steps.slug.outputs.sha8 }}-${{ steps.docker_tag.outputs.sha8 }}
         path: |
